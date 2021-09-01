@@ -1,0 +1,2 @@
+minikube addons enable metrics-server
+git clone https://github.com/kodekloudhub/kubernetes-metrics-server.git

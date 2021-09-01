@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name : nginx-pod
+  labels:
+    app: server
+    type: backend
+spec:
+  containers:
+    - name : nginx-server
+      image: nginx
+      ports:
+        - containerPort: 8080
+  #  kubectl taint nodes node1 app=blue:noSchedule
+  tolerations:
+    - key: "app"
+      value: "blue"
+      operator: "Equal"
+      effect: "noSchedule"

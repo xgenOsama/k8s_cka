@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-sleeper
+spec:
+  containers:
+    - name: ubuntu-sleeper
+      image: ubuntu
+      envFrom:
+        configMapRef:
+          name:  backend-env
+        #configMapKeyRef:
+        #  name: backend-env
+        #  key: HOST

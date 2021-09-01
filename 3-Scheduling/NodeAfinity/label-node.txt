@@ -1,0 +1,2 @@
+kubectl nodes node1 size=Large
+kubectl label node node01 color=blue

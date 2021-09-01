@@ -1,0 +1,7 @@
+kubectl taint nodes node-name key=value:taint-effect ( noSchedule , PreferNoSchedule,  noExecute)
+noSchedule --- > means the pods will no schedule in the node
+PreferNoSchedule --- > the system will try avoid schedule in the node but this is not guaranteed
+noExecute --- > new pods will not schedule in the node
+example :
+# kubectl taint nodes node1 app=blue:noSchedule
+# kubectl taint nodes controlplane node-role.kubernetes.io/master:NoSchedule-

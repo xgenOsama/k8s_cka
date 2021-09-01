@@ -1,0 +1,10 @@
+# kubectl create configmap <config-map-name> --from-literal=APP_COLOR=red
+# kubectl create configmap <config-map-name> --from-file=<path-to-file>
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-env
+data:
+  HOST: localhost
+  PORT: 8080
+

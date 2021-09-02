@@ -1,0 +1,7 @@
+openssl genrsa  -out osama.key 2048
+openssl req -new -key osama.key -subj "/CN=osama" -out osama.csr
+cat osama.csr | base64
+kubectl apply -f certificate.yaml
+kubectl certificate approve osama
+kubectl certificate deny agent-smith
+kubectl delete csr agent-smith

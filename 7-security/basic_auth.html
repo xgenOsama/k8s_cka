@@ -1,0 +1,179 @@
+<div class="text-viewer--container--18Ayx">
+    <div class="text-viewer--content--3hoqQ">
+        <div class="a1 mb-space-md">Article on Setting up Basic Authentication</div>
+        <div class="p-space-md">
+            <div data-purpose="safely-set-inner-html:rich-text-viewer:html" class="article-asset--content--1dAQ9"><h4>
+                Setup basic authentication on Kubernetes (Deprecated in 1.19)</h4>
+                <blockquote><p>Note: This is not recommended in a production environment. This is only for learning
+                    purposes. Also note that this approach is deprecated in Kubernetes version 1.19 and is no longer
+                    available in later releases</p></blockquote>
+                <p>Follow the below instructions to configure basic authentication in a kubeadm setup.</p>
+                <p>Create a file with user details locally at <code>/tmp/users/user-details.csv</code></p>
+                <div class="ud-component--base-components--code-block">
+                    <div>
+                        <pre class="prettyprint linenums prettyprinted" role="presentation" style=""><ol
+                                class="linenums"><li class="L0"><span class="com"># User File Contents</span></li><li
+                                class="L1"><span class="pln">password123</span><span class="pun">,</span><span
+                                class="pln">user1</span><span class="pun">,</span><span class="pln">u0001</span></li><li
+                                class="L2"><span class="pln">password123</span><span class="pun">,</span><span
+                                class="pln">user2</span><span class="pun">,</span><span class="pln">u0002</span></li><li
+                                class="L3"><span class="pln">password123</span><span class="pun">,</span><span
+                                class="pln">user3</span><span class="pun">,</span><span class="pln">u0003</span></li><li
+                                class="L4"><span class="pln">password123</span><span class="pun">,</span><span
+                                class="pln">user4</span><span class="pun">,</span><span class="pln">u0004</span></li><li
+                                class="L5"><span class="pln">password123</span><span class="pun">,</span><span
+                                class="pln">user5</span><span class="pun">,</span><span
+                                class="pln">u0005</span></li></ol></pre>
+                    </div>
+                </div>
+                <p><br></p>
+                <p>Edit the kube-apiserver static pod configured by kubeadm to pass in the user details. The file is
+                    located at <code>/etc/kubernetes/manifests/kube-apiserver.yaml</code></p>
+                <p><br></p>
+                <div class="ud-component--base-components--code-block">
+                    <div>
+                        <pre class="prettyprint linenums prettyprinted" role="presentation" style=""><ol
+                                class="linenums"><li class="L0"><span class="pln">apiVersion</span><span
+                                class="pun">:</span><span class="pln"> v1</span></li><li class="L1"><span class="pln">kind</span><span
+                                class="pun">:</span><span class="pln"> </span><span class="typ">Pod</span></li><li
+                                class="L2"><span class="pln">metadata</span><span class="pun">:</span></li><li
+                                class="L3"><span class="pln">  name</span><span class="pun">:</span><span class="pln"> kube</span><span
+                                class="pun">-</span><span class="pln">apiserver</span></li><li class="L4"><span
+                                class="pln">  </span><span class="kwd">namespace</span><span class="pun">:</span><span
+                                class="pln"> kube</span><span class="pun">-</span><span class="pln">system</span></li><li
+                                class="L5"><span class="pln">spec</span><span class="pun">:</span></li><li
+                                class="L6"><span class="pln">  containers</span><span class="pun">:</span></li><li
+                                class="L7"><span class="pln">  </span><span class="pun">-</span><span class="pln"> command</span><span
+                                class="pun">:</span></li><li class="L8"><span class="pln">    </span><span
+                                class="pun">-</span><span class="pln"> kube</span><span class="pun">-</span><span
+                                class="pln">apiserver</span></li><li class="L9"><span class="pln">      </span><span
+                                class="pun">&lt;</span><span class="pln">content</span><span class="pun">-</span><span
+                                class="pln">hidden</span><span class="pun">&gt;</span></li><li class="L0"><span
+                                class="pln">    image</span><span class="pun">:</span><span class="pln"> k8s</span><span
+                                class="pun">.</span><span class="pln">gcr</span><span class="pun">.</span><span
+                                class="pln">io</span><span class="pun">/</span><span class="pln">kube</span><span
+                                class="pun">-</span><span class="pln">apiserver</span><span class="pun">-</span><span
+                                class="pln">amd64</span><span class="pun">:</span><span class="pln">v1</span><span
+                                class="pun">.</span><span class="lit">11.3</span></li><li class="L1"><span class="pln">    name</span><span
+                                class="pun">:</span><span class="pln"> kube</span><span class="pun">-</span><span
+                                class="pln">apiserver</span></li><li class="L2"><span
+                                class="pln">    volumeMounts</span><span class="pun">:</span></li><li class="L3"><span
+                                class="pln">    </span><span class="pun">-</span><span
+                                class="pln"> mountPath</span><span class="pun">:</span><span class="pln"> </span><span
+                                class="str">/tmp/</span><span class="pln">users</span></li><li class="L4"><span
+                                class="pln">      name</span><span class="pun">:</span><span
+                                class="pln"> usr</span><span class="pun">-</span><span class="pln">details</span></li><li
+                                class="L5"><span class="pln">      readOnly</span><span class="pun">:</span><span
+                                class="pln"> </span><span class="kwd">true</span></li><li class="L6"><span class="pln">  volumes</span><span
+                                class="pun">:</span></li><li class="L7"><span class="pln">  </span><span
+                                class="pun">-</span><span class="pln"> hostPath</span><span class="pun">:</span></li><li
+                                class="L8"><span class="pln">      path</span><span class="pun">:</span><span
+                                class="pln"> </span><span class="str">/tmp/</span><span class="pln">users</span></li><li
+                                class="L9"><span class="pln">      type</span><span class="pun">:</span><span
+                                class="pln"> </span><span class="typ">DirectoryOrCreate</span></li><li class="L0"><span
+                                class="pln">    name</span><span class="pun">:</span><span class="pln"> usr</span><span
+                                class="pun">-</span><span class="pln">details</span></li></ol></pre>
+                    </div>
+                </div>
+                <p><br></p>
+                <p>Modify the kube-apiserver startup options to include the basic-auth file</p>
+                <p><br></p>
+                <div class="ud-component--base-components--code-block">
+                    <div>
+                        <pre class="prettyprint linenums prettyprinted" role="presentation" style=""><ol
+                                class="linenums"><li class="L0"><span class="pln">apiVersion</span><span
+                                class="pun">:</span><span class="pln"> v1</span></li><li class="L1"><span class="pln">kind</span><span
+                                class="pun">:</span><span class="pln"> </span><span class="typ">Pod</span></li><li
+                                class="L2"><span class="pln">metadata</span><span class="pun">:</span></li><li
+                                class="L3"><span class="pln">  creationTimestamp</span><span class="pun">:</span><span
+                                class="pln"> </span><span class="kwd">null</span></li><li class="L4"><span class="pln">  name</span><span
+                                class="pun">:</span><span class="pln"> kube</span><span class="pun">-</span><span
+                                class="pln">apiserver</span></li><li class="L5"><span class="pln">  </span><span
+                                class="kwd">namespace</span><span class="pun">:</span><span
+                                class="pln"> kube</span><span class="pun">-</span><span class="pln">system</span></li><li
+                                class="L6"><span class="pln">spec</span><span class="pun">:</span></li><li
+                                class="L7"><span class="pln">  containers</span><span class="pun">:</span></li><li
+                                class="L8"><span class="pln">  </span><span class="pun">-</span><span class="pln"> command</span><span
+                                class="pun">:</span></li><li class="L9"><span class="pln">    </span><span
+                                class="pun">-</span><span class="pln"> kube</span><span class="pun">-</span><span
+                                class="pln">apiserver</span></li><li class="L0"><span class="pln">    </span><span
+                                class="pun">-</span><span class="pln"> </span><span class="pun">--</span><span
+                                class="pln">authorization</span><span class="pun">-</span><span
+                                class="pln">mode</span><span class="pun">=</span><span class="typ">Node</span><span
+                                class="pun">,</span><span class="pln">RBAC</span></li><li class="L1"><span
+                                class="pln">      </span><span class="pun">&lt;</span><span
+                                class="pln">content</span><span class="pun">-</span><span class="pln">hidden</span><span
+                                class="pun">&gt;</span></li><li class="L2"><span class="pln">    </span><span
+                                class="pun">-</span><span class="pln"> </span><span class="pun">--</span><span
+                                class="pln">basic</span><span class="pun">-</span><span class="pln">auth</span><span
+                                class="pun">-</span><span class="pln">file</span><span class="pun">=</span><span
+                                class="str">/tmp/</span><span class="pln">users</span><span class="pun">/</span><span
+                                class="pln">user</span><span class="pun">-</span><span class="pln">details</span><span
+                                class="pun">.</span><span class="pln">csv</span></li></ol></pre>
+                    </div>
+                </div>
+                <p>Create the necessary roles and role bindings for these users:</p>
+                <p><br></p>
+                <div class="ud-component--base-components--code-block">
+                    <div>
+                        <pre class="prettyprint linenums prettyprinted" role="presentation" style=""><ol
+                                class="linenums"><li class="L0"><span class="pun">---</span></li><li class="L1"><span
+                                class="pln">kind</span><span class="pun">:</span><span class="pln"> </span><span
+                                class="typ">Role</span></li><li class="L2"><span class="pln">apiVersion</span><span
+                                class="pun">:</span><span class="pln"> rbac</span><span class="pun">.</span><span
+                                class="pln">authorization</span><span class="pun">.</span><span
+                                class="pln">k8s</span><span class="pun">.</span><span class="pln">io</span><span
+                                class="pun">/</span><span class="pln">v1</span></li><li class="L3"><span class="pln">metadata</span><span
+                                class="pun">:</span></li><li class="L4"><span class="pln">  </span><span class="kwd">namespace</span><span
+                                class="pun">:</span><span class="pln"> </span><span class="kwd">default</span></li><li
+                                class="L5"><span class="pln">  name</span><span class="pun">:</span><span class="pln"> pod</span><span
+                                class="pun">-</span><span class="pln">reader</span></li><li class="L6"><span
+                                class="pln">rules</span><span class="pun">:</span></li><li class="L7"><span class="pun">-</span><span
+                                class="pln"> apiGroups</span><span class="pun">:</span><span class="pln"> </span><span
+                                class="pun">[</span><span class="str">""</span><span class="pun">]</span><span
+                                class="pln"> </span><span class="com"># "" indicates the core API group</span></li><li
+                                class="L8"><span class="pln">  resources</span><span class="pun">:</span><span
+                                class="pln"> </span><span class="pun">[</span><span class="str">"pods"</span><span
+                                class="pun">]</span></li><li class="L9"><span class="pln">  verbs</span><span
+                                class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span
+                                class="str">"get"</span><span class="pun">,</span><span class="pln"> </span><span
+                                class="str">"watch"</span><span class="pun">,</span><span class="pln"> </span><span
+                                class="str">"list"</span><span class="pun">]</span></li><li class="L0"><span
+                                class="pln">&nbsp;</span></li><li class="L1"><span class="pun">---</span></li><li
+                                class="L2"><span class="com"># This role binding allows "jane" to read pods in the "default" namespace.</span></li><li
+                                class="L3"><span class="pln">kind</span><span class="pun">:</span><span
+                                class="pln"> </span><span class="typ">RoleBinding</span></li><li class="L4"><span
+                                class="pln">apiVersion</span><span class="pun">:</span><span
+                                class="pln"> rbac</span><span class="pun">.</span><span class="pln">authorization</span><span
+                                class="pun">.</span><span class="pln">k8s</span><span class="pun">.</span><span
+                                class="pln">io</span><span class="pun">/</span><span class="pln">v1</span></li><li
+                                class="L5"><span class="pln">metadata</span><span class="pun">:</span></li><li
+                                class="L6"><span class="pln">  name</span><span class="pun">:</span><span class="pln"> read</span><span
+                                class="pun">-</span><span class="pln">pods</span></li><li class="L7"><span
+                                class="pln">  </span><span class="kwd">namespace</span><span class="pun">:</span><span
+                                class="pln"> </span><span class="kwd">default</span></li><li class="L8"><span
+                                class="pln">subjects</span><span class="pun">:</span></li><li class="L9"><span
+                                class="pun">-</span><span class="pln"> kind</span><span class="pun">:</span><span
+                                class="pln"> </span><span class="typ">User</span></li><li class="L0"><span class="pln">  name</span><span
+                                class="pun">:</span><span class="pln"> user1 </span><span class="com"># Name is case sensitive</span></li><li
+                                class="L1"><span class="pln">  apiGroup</span><span class="pun">:</span><span
+                                class="pln"> rbac</span><span class="pun">.</span><span class="pln">authorization</span><span
+                                class="pun">.</span><span class="pln">k8s</span><span class="pun">.</span><span
+                                class="pln">io</span></li><li class="L2"><span class="pln">roleRef</span><span
+                                class="pun">:</span></li><li class="L3"><span class="pln">  kind</span><span
+                                class="pun">:</span><span class="pln"> </span><span class="typ">Role</span><span
+                                class="pln"> </span><span class="com">#this must be Role or ClusterRole</span></li><li
+                                class="L4"><span class="pln">  name</span><span class="pun">:</span><span class="pln"> pod</span><span
+                                class="pun">-</span><span class="pln">reader </span><span class="com"># this must match the name of the Role or ClusterRole you wish to bind to</span></li><li
+                                class="L5"><span class="pln">  apiGroup</span><span class="pun">:</span><span
+                                class="pln"> rbac</span><span class="pun">.</span><span class="pln">authorization</span><span
+                                class="pun">.</span><span class="pln">k8s</span><span class="pun">.</span><span
+                                class="pln">io</span></li></ol></pre>
+                    </div>
+                </div>
+                <p>Once created, you may authenticate into the kube-api server using the users credentials</p>
+                <p><code>curl -v -k https://localhost:6443/api/v1/pods -u "user1:password123"</code></p></div>
+        </div>
+        <div class="mt-space-sm"></div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 openssl genrsa -out my-bank.key 1024 # symatric key # create a private key
 openssl rsa -in my-back.key -pubbout mybank.pem
-openssl req -new -key my-bank.key -out mybank.csr -subj="/C=US/ST=CA/O=Org/CN=myback.com"
+openssl req -new -key my-bank.key -out mybank.csr -subj "/C=US/ST=CA/O=Org/CN=myback.com"
 # generate keys
 openssl genrsa -out ca.key 2048
 -> ca.key

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistantVolumeClaim
+metadata:
+  name: myclaim
+spec:
+  # storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requets:
+      storage: 500Mi
+  selector:
+    matchLabels:
+      name: my-pv-voll

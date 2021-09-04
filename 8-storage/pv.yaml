@@ -1,0 +1,19 @@
+# is cluster wide pool of storage
+---
+apiVersion: v1
+kind: PersistantVolume
+metadata:
+  name: pv-voll
+  labels:
+    name: my-pv-voll
+spec:
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: /tmp/data
+  awsElaticBlockStore:
+    volumeId: <volume-id>
+    fsType: ext4

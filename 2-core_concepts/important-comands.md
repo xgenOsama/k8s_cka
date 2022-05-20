@@ -76,6 +76,9 @@ Create a Service named nginx of type NodePort to expose pod nginx's port 80 on p
 
 kubectl expose pod nginx --type=NodePort --port=80 --name=nginx-service --dry-run=client -o yaml
 
+Port forwarding for service
+kubectl port-forward -n namespace svc/name_of_service local_port:service_port
+
 (This will automatically use the pod's labels as selectors, but you cannot specify the node port. You have to generate a definition file and then add the node port in manually before creating the service with the pod.)
 
 Or

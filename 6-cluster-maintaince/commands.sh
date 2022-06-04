@@ -1,5 +1,9 @@
+## You can use kubectl drain to safely evict all of your pods from a node before you perform maintenance on the node
 # kubectl drain node-1
+## To mark a Node unschedulable, run:
 # kubectl cordon node-1
+## afterwards to tell Kubernetes that it can resume scheduling new pods onto the node.
+
 # kubectl uncordon node-1
 # kubectl drain node01 --ignore-daemonsets
 # upgrade cluster

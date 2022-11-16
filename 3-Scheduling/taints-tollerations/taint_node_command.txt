@@ -1,5 +1,5 @@
 kubectl taint nodes node-name key=value:taint-effect ( noSchedule , PreferNoSchedule,  noExecute)
-noSchedule --- > means the pods will no schedule in the node
+noSchedule --- > NoSchedule. This means that no pod will be able to schedule onto node-name unless it has a matching toleration
 PreferNoSchedule --- > the system will try avoid schedule in the node but this is not guaranteed
 noExecute --- > new pods will not schedule in the node
 example :

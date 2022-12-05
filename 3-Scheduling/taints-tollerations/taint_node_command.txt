@@ -4,4 +4,6 @@ PreferNoSchedule --- > the system will try avoid schedule in the node but this i
 noExecute --- > new pods will not schedule in the node
 example :
 # kubectl taint nodes node1 app=blue:noSchedule
+# node if you wanna schedule pods in master plane
+# kubectl taint node kubernetes-master  node-role.kubernetes.io/control-plane:NoSchedule-
 # kubectl taint nodes controlplane node-role.kubernetes.io/master:NoSchedule-

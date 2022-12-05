@@ -1,0 +1,52 @@
+---
+# schedule all pods with the same lable into one node
+# one single replica run in one node
+# kubectl get pods -o wide          
+# NAME                                                READY   STATUS    RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+# my-http-server-pod-affinity-hard-57fb4cd679-7dgbw   1/1     Running   0          59s   10.244.1.13   kubernetes-worker   <none>           <none>
+# my-http-server-pod-affinity-hard-57fb4cd679-kpf2d   1/1     Running   0          59s   10.244.1.12   kubernetes-worker   <none>           <none> 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-http-server-pod-affinity-hard
+  labels:
+    name: my-http-server-pod-affinity-hard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-http-server-pod-affinity-hard
+  template:
+    metadata:
+      labels:
+        app: my-http-server-pod-affinity-hard
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app 
+                    operator: In 
+                    values:
+                      - my-http-server-pod-affinity-hard
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+      - image:  nginx
+        name:  my-http-server-node-affinity-hard
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort:  80
+          name:  http-server
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+        - name: data
+          emptyDir: {}

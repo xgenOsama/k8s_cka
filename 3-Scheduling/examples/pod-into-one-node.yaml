@@ -1,0 +1,40 @@
+---
+# kubectl label node kubernetes-worker role=worker
+# kubectl label node kubernetes-master role=master
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  my-http-server
+  labels:
+    name:  my-http-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-http-server
+  template:
+    metadata:
+      labels:
+        app: my-http-server
+    spec:
+      nodeSelector:
+        role : master
+      containers:
+      - image:  nginx
+        name:  my-http-server
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort:  80
+          name:  http-server
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+        - name: data
+          emptyDir: {}

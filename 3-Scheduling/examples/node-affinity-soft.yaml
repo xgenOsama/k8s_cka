@@ -1,0 +1,53 @@
+---
+# kubectl taint nodes controlplane node-role.kubernetes.io/master:NoSchedule-
+# kubectl label node kubernetes-worker role=worker
+# kubectl label node kubernetes-master role=master
+# kubectl drain kubernetes-worker --ignore-daemonsets --delete-emptydir-data
+# kubectl cordon kubernetes-worker 
+# kubectl get pods ->  to see the status
+# my-http-server-node-affinity-soft-85f7fbb7df-ncg56   1/1     Running   0          32s   10.244.0.22   kubernetes-master   <none>           <none>
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  my-http-server-node-affinity-soft
+  labels:
+    name: my-http-server-node-affinity-soft
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-http-server-node-affinity-soft
+  template:
+    metadata:
+      labels:
+        app: my-http-server-node-affinity-soft
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution: # will schedule this  node if can't schedule will schedule to other node
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key : role 
+                  operator: In 
+                  values:
+                    - worker
+      containers:
+      - image:  nginx
+        name:  my-http-server-node-affinity-hard
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort:  80
+          name:  http-server
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+        - name: data
+          emptyDir: {}

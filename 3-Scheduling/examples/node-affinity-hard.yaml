@@ -1,0 +1,55 @@
+---
+# kubectl taint nodes controlplane node-role.kubernetes.io/master:NoSchedule-
+# kubectl label node kubernetes-worker role=worker
+# kubectl label node kubernetes-master role=master
+# kubectl drain kubernetes-worker --ignore-daemonsets --delete-emptydir-data
+# kubectl cordon kubernetes-worker 
+# kubectl get pods ->  to see the status
+# my-http-server-node-affinity-hard-59479f46b5-nm2qz   0/1     Pending   0          31s
+# kubectl uncordon kubernetes-worker 
+# kubectl get pods ->  to see the status
+# my-http-server-node-affinity-hard-59479f46b5-nm2qz   1/1     Running   0          2m50s
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  my-http-server-node-affinity-hard 
+  labels:
+    name: my-http-server-node-affinity-hard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-http-server-node-affinity-hard
+  template:
+    metadata:
+      labels:
+        app: my-http-server-node-affinity-hard
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution: # will schedule this in the available node only with this values
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key : role
+                    operator: In # NotIn , Exists , DoesNotExists, Gt , Lt
+                    values:
+                      - worker
+      containers:
+      - image:  nginx
+        name:  my-http-server-node-affinity-hard
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort:  80
+          name:  http-server
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+        - name: data
+          emptyDir: {}

@@ -1,0 +1,55 @@
+---
+# schedule only one pod with the same lable into one node if it can schedule 
+# one single replica run in one node
+# kubectl drain kubernetes-worker --ignore-daemonsets --delete-emptydir-data
+# kubectl get pods -o wide          
+# my-http-server-pod-anti-affinity-soft-74b9d7b8d8-7gzc9   1/1     Running   0          10s   10.244.0.247   kubernetes-master   <none>           <none>
+# my-http-server-pod-anti-affinity-soft-74b9d7b8d8-r7tfj   1/1     Running   0          10s   10.244.0.248   kubernetes-master   <none>  
+# kubectl uncordon kubernetes-worker
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-http-server-pod-anti-affinity-soft
+  labels:
+    name: my-http-server-pod-anti-affinity-soft
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-http-server-pod-anti-affinity-soft
+  template:
+    metadata:
+      labels:
+        app: my-http-server-pod-anti-affinity-soft
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app 
+                    operator: In 
+                    values:
+                      - my-http-server-pod-anti-affinity-soft
+              topologyKey: topology.kubernetes.io/zone
+      containers:
+      - image:  nginx
+        name:  my-http-server-node-affinity-soft
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort:  80
+          name:  http-server
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+        - name: data
+          emptyDir: {}
